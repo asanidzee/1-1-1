@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drama Movies</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .movies {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .movie {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .movie img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .movie h3 {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Drama Movies</h1>
+        <div class="movies" id="movies"></div>
+    </div>
+
+    <script>
+        const API_KEY = '9a380a2f';
+        const BASE_URL = 'https://www.omdbapi.com/';
+        const moviesContainer = document.getElementById('movies');
+
+        async function fetchDramaMovies() {
+            try {
+                const response = await fetch(`${BASE_URL}?apikey=${API_KEY}&s=drama&type=movie`);
+                const data = await response.json();
+
+                if (data.Response === "True") {
+                    displayMovies(data.Search);
+                } else {
+                    moviesContainer.innerHTML = `<p>${data.Error}</p>`;
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                moviesContainer.innerHTML = `<p>Failed to fetch movies.</p>`;
+            }
+        }
+
+        function displayMovies(movies) {
+            moviesContainer.innerHTML = movies
+                .map(
+                    (movie) => `
+                <div class="movie">
+                    <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/200x300'}" alt="${movie.Title}">
+                    <h3>${movie.Title}</h3>
+                </div>`
+                )
+                .join('');
+        }
+
+        fetchDramaMovies();
+    </script>
+</body>
+</html>
